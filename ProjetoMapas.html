@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interativo</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPTCXr83TDK2EevM1-Ff6_621dUFe08HM"></script>
+    <style>
+        /* Add your styles here */
+        #map {
+            height: 400px; 
+            width: 100%; 
+        }
+    </style>
+</head>
+<body>
+
+<h1>Mapa Interativo: Encontre os Pontos Escondidos!</h1>
+<label for="latitude">Latitude:</label>
+<input type="text" id="latitude" placeholder="Ex: -3.7698813554732262">
+<br>
+<label for="longitude">Longitude:</label>
+<input type="text" id="longitude" placeholder="Ex: -38.47914681222398">
+<br>
+<label for="markerName">Nome do Marcador:</label>
+<input type="text" id="markerName" placeholder="Ex: NEP">
+<br>
+<button onclick="addMarker()">Adicionar Ponto</button>
+
+<div id="map"></div>
+
+<script>
+    let map;
+    function initMap() {
+        // Iniciar o mapa
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -3.769881, lng: -38.479147},
+            zoom: 15
+        });
+    }
+
+    function addMarker() {
+        const lat = parseFloat(document.getElementById('latitude').value);
+        const lng = parseFloat(document.getElementById('longitude').value);
+        const name = document.getElementById('markerName').value;
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+            new google.maps.Marker({
+                position: {lat: lat, lng: lng},
+                map: map,
+                title: name
+            });
+            map.panTo({lat: lat, lng: lng});
+        } else {
+            alert('Por favor, insira coordenadas válidas.');
+        }
+    }
+
+    window.onload = initMap; 
+</script>
+
+</body>
+</html>
