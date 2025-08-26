@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pontos no Mapa - UNIFOR</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    header {
+      background: #0056a6;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.4rem;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 1rem;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #0056a6;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0073d1;
+    }
+
+    #map {
+      width: 100%;
+      height: 80vh;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #f1f1f1;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Projeto MAPAS – Pontos no Campus UNIFOR
+  </header>
+
+  <section id="controls">
+    <input type="text" id="lat" placeholder="Latitude">
+    <input type="text" id="lng" placeholder="Longitude">
+    <input type="text" id="title" placeholder="Título do ponto">
+    <button onclick="addMarker()">Adicionar Ponto</button>
+  </section>
+
+  <div id="map"></div>
+
+  <footer>
+    Núcleo de Extensão e Práticas (NEP) - 2025
+  </footer>
+
+  <script>
+    let map;
+
+    function initMap() {
+      const centro = { lat: -3.769, lng: -38.478 }; // UNIFOR aproximado
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: centro,
+      });
+    }
+
+    function addMarker() {
+      const lat = parseFloat(document.getElementById("lat").value);
+      const lng = parseFloat(document.getElementById("lng").value);
+      const title = document.getElementById("title").value || "Ponto";
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        new google.maps.Marker({
+          position: { lat, lng },
+          map: map,
+          title: title,
+          draggable: true
+        });
+        map.setCenter({ lat, lng });
+      } else {
+        alert("Insira valores válidos de latitude e longitude!");
+      }
+    }
+  </script>
+
+  <!-- API Google Maps -->
+  <script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPTCXr83TDK2EevM1-Ff6_621dUFe08HM&callback=initMap">
+  </script>
+</body>
+</html>
