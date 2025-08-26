@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interativo - UNIFOR</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #003aa6;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 1rem;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input, button {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    button {
+      background: #003aa6;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #002f80;
+    }
+
+    #map {
+      width: 100%;
+      height: 65vh;
+      flex-grow: 1;
+    }
+
+    #markerList {
+      list-style: none;
+      padding: 10px;
+      margin: 0;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      font-size: 0.95rem;
+      max-height: 25vh;
+      overflow-y: auto;
+    }
+
+    #markerList li {
+      padding: 6px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #markerList button {
+      font-size: 0.8rem;
+      padding: 4px 6px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #f1f1f1;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Mapa Interativo: Encontre os Pontos Escondidos!
+  </header>
+
+  <section id="controls">
+    <label for="latitude">Latitude:</label>
+    <input type="text" id="latitude" placeholder="-3.76988">
+    <label for="longitude">Longitude:</label>
+    <input type="text" id="longitude" placeholder="-38.47914">
+    <label for="markerName">Nome:</label>
+    <input type="text" id="markerName" placeholder="Ex: Biblioteca">
+    <button onclick="addMarker()">Adicionar Ponto</button>
+  </section>
+
+  <div id="map"></div>
+
+  <!-- Lista de pontos -->
+  <ul id="markerList"></ul>
+
+  <footer>
+    Núcleo de Extensão e Práticas (NEP) - 2025
+  </footer>
+
+  <script>
+    let map;
+    let markers = [];
+
+    function initMap() {
+      const centro = { lat: -3.769, lng: -38.478 }; 
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: centro,
+      });
+
+      map.addListener("click", function(event) {
+        addMarkerAtPosition(event.latLng);
+      });
+    }
+
+    function addMarker() {
+      const lat = parseFloat(document.getElementById("latitude").value);
+      const lng = parseFloat(document.getElementById("longitude").value);
+      const title = document.getElementById("markerName").value || "Ponto";
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        createMarker({ lat, lng }, title);
+        map.setCenter({ lat, lng });
+      } else {
+        alert("Insira valores válidos!");
+      }
+    }
+
+    function addMarkerAtPosition(latLng) {
+      const markerName = prompt("Nome do marcador:", "Ponto") || "Ponto";
+      createMarker(latLng, markerName);
+      map.setCenter(latLng);
+    }
+
+    function createMarker(position, title) {
+      const marker = new google.maps.Marker({
+        position,
+        map,
+        title,
+        draggable: true,
+        icon: "c:\Users\isabe\Downloads\jpg2png\0b7e31ecf1ff921b70c41a61becbc618.png"
+      });
+
+      markers.push(marker);
+      addMarkerToList(marker, title);
+    }
+
+    function addMarkerToList(marker, name) {
+      const list = document.getElementById("markerList");
+      const item = document.createElement("li");
+      item.innerHTML = `
+        <span><strong>${name}</strong> → [${marker.getPosition().lat().toFixed(5)}, ${marker.getPosition().lng().toFixed(5)}]</span>
+        <span>
+          <button onclick="centerMarker(${markers.length - 1})">Ver</button>
+          <button onclick="removeMarker(${markers.length - 1}, this)">Excluir</button>
+        </span>
+      `;
+      list.appendChild(item);
+    }
+
+    function centerMarker(index) {
+      const marker = markers[index];
+      if (marker) {
+        map.setCenter(marker.getPosition());
+        map.setZoom(18);
+
+        // Acessibilidade: leitura em voz alta do nome
+        const msg = new SpeechSynthesisUtterance(marker.getTitle());
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function removeMarker(index, btn) {
+      const marker = markers[index];
+      if (marker) {
+        marker.setMap(null);
+        markers[index] = null;
+      }
+      btn.closest("li").remove();
+    }
+  </script>
+
+  <!-- API Google Maps -->
+  <script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPTCXr83TDK2EevM1-Ff6_621dUFe08HM&callback=initMap">
+  </script>
+</body>
+</html>
