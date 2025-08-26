@@ -14,7 +14,7 @@
     }
 
     header {
-      background: #0056a6;
+      background: #003aa6;
       color: white;
       text-align: center;
       padding: 1rem;
@@ -28,6 +28,17 @@
       padding: 1rem;
       background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #controls label {
+      margin-right: 4px;
+      font-weight: bold;
+    }
+
+    #controls input, #controls button {
+      margin-bottom: 6px;
     }
 
     input, button {
@@ -37,14 +48,14 @@
     }
 
     button {
-      background: #0056a6;
+      background: #003aa6;
       color: white;
       cursor: pointer;
       transition: 0.3s;
     }
 
     button:hover {
-      background: #0073d1;
+      background: #003aa6;
     }
 
     #map {
@@ -66,9 +77,15 @@
   </header>
 
   <section id="controls">
-    <input type="text" id="lat" placeholder="Latitude">
-    <input type="text" id="lng" placeholder="Longitude">
-    <input type="text" id="title" placeholder="Título do ponto">
+    <label for="latitude">Latitude:</label>
+    <input type="text" id="latitude" placeholder="Ex: -3.7698813554732262">
+    <br>
+    <label for="longitude">Longitude:</label>
+    <input type="text" id="longitude" placeholder="Ex: -38.47914681222398">
+    <br>
+    <label for="markerName">Nome do Marcador:</label>
+    <input type="text" id="markerName" placeholder="Ex: NEP">
+    <br>
     <button onclick="addMarker()">Adicionar Ponto</button>
   </section>
 
@@ -90,9 +107,9 @@
     }
 
     function addMarker() {
-      const lat = parseFloat(document.getElementById("lat").value);
-      const lng = parseFloat(document.getElementById("lng").value);
-      const title = document.getElementById("title").value || "Ponto";
+      const lat = parseFloat(document.getElementById("latitude").value);
+      const lng = parseFloat(document.getElementById("longitude").value);
+      const title = document.getElementById("markerName").value || "Ponto";
 
       if (!isNaN(lat) && !isNaN(lng)) {
         new google.maps.Marker({
